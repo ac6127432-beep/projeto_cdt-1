@@ -1,4 +1,43 @@
 from datetime import datetime
+import msvcrt
+
+
+# ==========================================================
+# FUNÇÃO PARA DIGITAR SENHA OCULTA COM ****
+# ==========================================================
+
+def senha_oculta(mensagem="Senha: "):
+    print(mensagem, end="", flush=True)
+    senha = ""
+
+    while True:
+        tecla = msvcrt.getch()
+
+        # ENTER
+        if tecla in (b"\r", b"\n"):
+            print()
+            break
+
+        # BACKSPACE
+        elif tecla == b"\x08":
+            if senha:
+                senha = senha[:-1]
+                print("\b \b", end="", flush=True)
+
+        # Teclas especiais
+        elif tecla in (b"\x00", b"\xe0"):
+            msvcrt.getch()
+
+        # Caracteres normais
+        else:
+            try:
+                caractere = tecla.decode("utf-8")
+                senha += caractere
+                print("*", end="", flush=True)
+            except UnicodeDecodeError:
+                pass
+
+    return senha
 
 
 # ==========================================================
@@ -41,7 +80,7 @@ bebidas = {
 
 
 # ==========================================================
-# FUNÇÕES
+# FUNÇÕES GERAIS
 # ==========================================================
 
 def linha():
@@ -66,6 +105,7 @@ def cadastrar():
     linha()
 
     nome = input("Digite seu nome: ")
+
     email = input("Digite seu e-mail: ").lower()
 
     if email in usuarios:
@@ -73,8 +113,11 @@ def cadastrar():
         pausar()
         return
 
-    senha = input("Crie uma senha: ")
-    confirmar = input("Confirme a senha: ")
+    # Senha aparecendo como ****
+    senha = senha_oculta("Crie uma senha: ")
+
+    # Confirmação da senha também aparece como ****
+    confirmar = senha_oculta("Confirme a senha: ")
 
     if senha != confirmar:
         print("\nAs senhas não são iguais!")
@@ -100,7 +143,9 @@ def login():
     linha()
 
     email = input("E-mail: ").lower()
-    senha = input("Senha: ")
+
+    # Senha aparece como ****
+    senha = senha_oculta("Senha: ")
 
     if email in usuarios and usuarios[email]["senha"] == senha:
         print("\nLogin realizado com sucesso!")
@@ -126,7 +171,12 @@ def mostrar_hamburgueres():
 
     for codigo, produto in hamburgueres.items():
         nome, preco = produto
-        print(f"{codigo} - {nome:<25} {dinheiro(preco)}")
+
+        print(
+            f"{codigo} - "
+            f"{nome:<25} "
+            f"{dinheiro(preco)}"
+        )
 
 
 # ==========================================================
@@ -140,7 +190,12 @@ def mostrar_bebidas():
 
     for codigo, produto in bebidas.items():
         nome, preco = produto
-        print(f"{codigo} - {nome:<25} {dinheiro(preco)}")
+
+        print(
+            f"{codigo} - "
+            f"{nome:<25} "
+            f"{dinheiro(preco)}"
+        )
 
 
 # ==========================================================
@@ -148,19 +203,25 @@ def mostrar_bebidas():
 # ==========================================================
 
 def adicionar_produto(carrinho, produtos, tipo):
-    mostrar = mostrar_hamburgueres if tipo == "hamburguer" else mostrar_bebidas
 
-    mostrar()
+    if tipo == "hamburguer":
+        mostrar_hamburgueres()
+    else:
+        mostrar_bebidas()
 
     try:
-        codigo = int(input("\nDigite o código do produto: "))
+        codigo = int(
+            input("\nDigite o código do produto: ")
+        )
 
         if codigo not in produtos:
             print("\nProduto inválido!")
             pausar()
             return
 
-        quantidade = int(input("Digite a quantidade: "))
+        quantidade = int(
+            input("Digite a quantidade: ")
+        )
 
         if quantidade <= 0:
             print("\nQuantidade inválida!")
@@ -175,7 +236,10 @@ def adicionar_produto(carrinho, produtos, tipo):
             "quantidade": quantidade
         })
 
-        print(f"\n{quantidade}x {nome} adicionado ao carrinho!")
+        print(
+            f"\n{quantidade}x {nome} "
+            "adicionado ao carrinho!"
+        )
 
     except ValueError:
         print("\nDigite apenas números!")
@@ -184,10 +248,11 @@ def adicionar_produto(carrinho, produtos, tipo):
 
 
 # ==========================================================
-# CARRINHO
+# MOSTRAR CARRINHO
 # ==========================================================
 
 def mostrar_carrinho(carrinho):
+
     linha()
     print("SEU CARRINHO")
     linha()
@@ -200,7 +265,12 @@ def mostrar_carrinho(carrinho):
     total = 0
 
     for item in carrinho:
-        subtotal = item["preco"] * item["quantidade"]
+
+        subtotal = (
+            item["preco"] *
+            item["quantidade"]
+        )
+
         total += subtotal
 
         print(
@@ -210,7 +280,10 @@ def mostrar_carrinho(carrinho):
         )
 
     linha()
-    print(f"TOTAL: {dinheiro(total)}")
+
+    print(
+        f"TOTAL: {dinheiro(total)}"
+    )
 
     pausar()
 
@@ -224,10 +297,13 @@ def mostrar_carrinho(carrinho):
 def finalizar_compra(carrinho, usuario):
 
     if not carrinho:
+
         linha()
         print("SEU CARRINHO ESTÁ VAZIO!")
         linha()
+
         pausar()
+
         return
 
     linha()
@@ -237,7 +313,12 @@ def finalizar_compra(carrinho, usuario):
     total = 0
 
     for item in carrinho:
-        subtotal = item["preco"] * item["quantidade"]
+
+        subtotal = (
+            item["preco"] *
+            item["quantidade"]
+        )
+
         total += subtotal
 
         print(
@@ -247,15 +328,21 @@ def finalizar_compra(carrinho, usuario):
         )
 
     linha()
-    print(f"TOTAL: {dinheiro(total)}")
+
+    print(
+        f"TOTAL: {dinheiro(total)}"
+    )
 
     print("\nFORMAS DE PAGAMENTO")
+
     print("1 - Dinheiro")
     print("2 - Pix")
     print("3 - Cartão de Débito")
     print("4 - Cartão de Crédito")
 
-    opcao = input("\nEscolha o pagamento: ")
+    opcao = input(
+        "\nEscolha o pagamento: "
+    )
 
     pagamentos = {
         "1": "Dinheiro",
@@ -265,29 +352,53 @@ def finalizar_compra(carrinho, usuario):
     }
 
     if opcao not in pagamentos:
-        print("\nForma de pagamento inválida!")
+
+        print(
+            "\nForma de pagamento inválida!"
+        )
+
         pausar()
+
         return
 
     pagamento = pagamentos[opcao]
 
     print("\n" + "=" * 55)
+
     print("PEDIDO FINALIZADO!")
+
     print("=" * 55)
 
-    print(f"Cliente: {usuario['nome']}")
-    print(f"Pagamento: {pagamento}")
-    print(f"Total: {dinheiro(total)}")
-
-    data = datetime.now()
     print(
-        "Data:",
-        data.strftime("%d/%m/%Y %H:%M:%S")
+        f"Cliente: {usuario['nome']}"
     )
 
-    print("\n🍔 Obrigado pela preferência!")
-    print("Seu pedido está sendo preparado!")
+    print(
+        f"Pagamento: {pagamento}"
+    )
 
+    print(
+        f"Total: {dinheiro(total)}"
+    )
+
+    data = datetime.now()
+
+    print(
+        "Data:",
+        data.strftime(
+            "%d/%m/%Y %H:%M:%S"
+        )
+    )
+
+    print(
+        "\n🍔 Obrigado pela preferência!"
+    )
+
+    print(
+        "Seu pedido está sendo preparado!"
+    )
+
+    # Limpa o carrinho
     carrinho.clear()
 
     pausar()
@@ -304,11 +415,16 @@ def menu_hamburgueria(usuario):
     while True:
 
         print("\n")
-        linha()
-        print("🍔 HAMBURGUERIA")
+
         linha()
 
-        print(f"Cliente: {usuario['nome']}")
+        print("🍔 HAMBURGUERIA")
+
+        linha()
+
+        print(
+            f"Cliente: {usuario['nome']}"
+        )
 
         print("\n1 - Ver hambúrgueres")
         print("2 - Adicionar hambúrguer")
@@ -318,13 +434,18 @@ def menu_hamburgueria(usuario):
         print("6 - Finalizar compra")
         print("7 - Sair da conta")
 
-        opcao = input("\nEscolha uma opção: ")
+        opcao = input(
+            "\nEscolha uma opção: "
+        )
 
+        # Ver hambúrgueres
         if opcao == "1":
 
             mostrar_hamburgueres()
+
             pausar()
 
+        # Adicionar hambúrguer
         elif opcao == "2":
 
             adicionar_produto(
@@ -333,11 +454,14 @@ def menu_hamburgueria(usuario):
                 "hamburguer"
             )
 
+        # Ver bebidas
         elif opcao == "3":
 
             mostrar_bebidas()
+
             pausar()
 
+        # Adicionar bebida
         elif opcao == "4":
 
             adicionar_produto(
@@ -346,10 +470,12 @@ def menu_hamburgueria(usuario):
                 "bebida"
             )
 
+        # Ver carrinho
         elif opcao == "5":
 
             mostrar_carrinho(carrinho)
 
+        # Finalizar compra
         elif opcao == "6":
 
             finalizar_compra(
@@ -357,15 +483,23 @@ def menu_hamburgueria(usuario):
                 usuario
             )
 
+        # Sair da conta
         elif opcao == "7":
 
-            print("\nSaindo da conta...")
+            print(
+                "\nSaindo da conta..."
+            )
+
             pausar()
+
             break
 
         else:
 
-            print("\nOpção inválida!")
+            print(
+                "\nOpção inválida!"
+            )
+
             pausar()
 
 
@@ -378,36 +512,59 @@ def menu_inicial():
     while True:
 
         print("\n")
+
         linha()
-        print("🍔 BEM-VINDO À HAMBURGUERIA 🍔")
+
+        print(
+            "🍔 BEM-VINDO À HAMBURGUERIA 🍔"
+        )
+
         linha()
 
         print("1 - Fazer Login")
         print("2 - Cadastrar Conta")
         print("3 - Sair")
 
-        opcao = input("\nEscolha uma opção: ")
+        opcao = input(
+            "\nEscolha uma opção: "
+        )
 
+        # Login
         if opcao == "1":
 
             usuario = login()
 
             if usuario:
-                menu_hamburgueria(usuario)
 
+                menu_hamburgueria(
+                    usuario
+                )
+
+        # Cadastro
         elif opcao == "2":
 
             cadastrar()
 
+        # Sair
         elif opcao == "3":
 
-            print("\nObrigado por utilizar nosso sistema!")
-            print("Até logo! 🍔")
+            print(
+                "\nObrigado por utilizar "
+                "nosso sistema!"
+            )
+
+            print(
+                "Até logo! 🍔"
+            )
+
             break
 
         else:
 
-            print("\nOpção inválida!")
+            print(
+                "\nOpção inválida!"
+            )
+
             pausar()
 
 
