@@ -8,7 +8,7 @@ import urllib.request
 import io
 
 # ============================================================
-# HAMBURGUERIA AUTOMATIZADA
+# Chapa Quente Hamburguers
 # Interface: 900x600
 # ============================================================
 
@@ -778,7 +778,7 @@ def limpar_pedido():
 baixar_fotos()
 
 janela = tk.Tk()
-janela.title("Hamburgueria Automatizada")
+janela.title("Chapa Quente Hmaburguers")
 janela.geometry(f"{LARGURA}x{ALTURA}")
 janela.resizable(False, False)
 janela.configure(bg=COR_FUNDO)
@@ -794,7 +794,7 @@ topo.pack_propagate(False)
 
 tk.Label(
     topo,
-    text="🍔 HAMBURGUERIA",
+    text="🍔 Chapa Quente",
     font=("Arial", 20, "bold"),
     bg="#0b0b0b",
     fg=COR_BRANCO
@@ -802,7 +802,7 @@ tk.Label(
 
 tk.Label(
     topo,
-    text="AUTOMATIZADA",
+    text="Hamburguers",
     font=("Arial", 10, "bold"),
     bg="#0b0b0b",
     fg=COR_VERMELHO
