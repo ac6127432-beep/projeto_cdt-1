@@ -7,9 +7,9 @@ import os
 import urllib.request
 import io
 
+
 # ============================================================
-# Chapa Quente Hamburguers
-# Interface: 900x600
+# CHAPA QUENTE HAMBURGUERIA
 # ============================================================
 
 LARGURA = 900
@@ -29,54 +29,39 @@ PASTA_IMAGENS = "imagens"
 
 os.makedirs(PASTA_IMAGENS, exist_ok=True)
 
+
+# ============================================================
+# CARDAPIO
+# ============================================================
+
 CARDAPIO = {
+
     "X-Burger": {
         "preco": 15.00,
         "descricao": "Pao, carne, queijo e molho especial",
         "imagem": "xburger.jpg",
         "emoji": "🍔"
     },
+
     "X-Salada": {
         "preco": 18.00,
         "descricao": "Carne, queijo, alface e tomate",
         "imagem": "xsalada.jpg",
         "emoji": "🥬"
     },
+
     "X-Bacon": {
         "preco": 22.00,
         "descricao": "Carne, queijo, bacon e molho",
         "imagem": "xbacon.jpg",
         "emoji": "🥓"
     },
+
     "X-Tudo": {
         "preco": 28.00,
         "descricao": "Carne, queijo, bacon, salada e ovo",
         "imagem": "xtudo.jpg",
         "emoji": "🍔"
-    },
-    "Batata Frita": {
-        "preco": 12.00,
-        "descricao": "Batata frita crocante",
-        "imagem": "batata.jpg",
-        "emoji": "🍟"
-    },
-    "Refrigerante": {
-        "preco": 7.00,
-        "descricao": "Lata 350ml",
-        "imagem": "refrigerante.jpg",
-        "emoji": "🥤"
-    },
-    "Suco": {
-        "preco": 8.00,
-        "descricao": "Suco natural",
-        "imagem": "suco.jpg",
-        "emoji": "🧃"
-    },
-    "Agua": {
-        "preco": 4.00,
-        "descricao": "Agua mineral 500ml",
-        "imagem": "agua.jpg",
-        "emoji": "💧"
     },
 
     "X-Frango": {
@@ -85,99 +70,150 @@ CARDAPIO = {
         "imagem": "xfrango.jpg",
         "emoji": "🍔"
     },
+
     "X-Cheddar": {
         "preco": 23.00,
         "descricao": "Carne, cheddar cremoso e molho especial",
         "imagem": "xcheddar.jpg",
         "emoji": "🍔"
     },
+
     "X-Duplo": {
         "preco": 30.00,
         "descricao": "Duas carnes, queijo, bacon e molho",
         "imagem": "xduplo.jpg",
         "emoji": "🍔"
     },
+
     "X-Barbecue": {
         "preco": 26.00,
         "descricao": "Carne, queijo, bacon e molho barbecue",
         "imagem": "xbarbecue.jpg",
         "emoji": "🍔"
     },
+
+    "Batata Frita": {
+        "preco": 12.00,
+        "descricao": "Batata frita crocante",
+        "imagem": "batata.jpg",
+        "emoji": "🍟"
+    },
+
     "Coca-Cola": {
         "preco": 7.00,
         "descricao": "Lata 350ml",
         "imagem": "coca.jpg",
         "emoji": "🥤"
     },
+
     "Guarana": {
         "preco": 7.00,
         "descricao": "Lata 350ml",
         "imagem": "guarana.jpg",
         "emoji": "🥤"
     },
+
     "Fanta Laranja": {
         "preco": 7.00,
         "descricao": "Lata 350ml",
         "imagem": "fanta.jpg",
         "emoji": "🥤"
     },
+
     "Sprite": {
         "preco": 7.00,
         "descricao": "Lata 350ml",
         "imagem": "sprite.jpg",
         "emoji": "🥤"
     },
+
     "Pepsi": {
         "preco": 7.00,
         "descricao": "Lata 350ml",
         "imagem": "pepsi.jpg",
         "emoji": "🥤"
     },
+
+    "Suco": {
+        "preco": 8.00,
+        "descricao": "Suco natural",
+        "imagem": "suco.jpg",
+        "emoji": "🧃"
+    },
+
     "Suco de Laranja": {
         "preco": 9.00,
         "descricao": "Suco natural de laranja",
         "imagem": "suco_laranja.jpg",
         "emoji": "🧃"
     },
+
     "Suco de Maracuja": {
         "preco": 9.00,
         "descricao": "Suco natural de maracuja",
         "imagem": "suco_maracuja.jpg",
         "emoji": "🧃"
     },
+
     "Suco de Morango": {
         "preco": 10.00,
         "descricao": "Suco natural de morango",
         "imagem": "suco_morango.jpg",
         "emoji": "🧃"
     },
+
     "Suco de Limao": {
         "preco": 8.00,
         "descricao": "Suco natural de limao",
         "imagem": "suco_limao.jpg",
         "emoji": "🧃"
     },
-}
 
-carrinho = []
-imagens = {}
+    "Agua": {
+        "preco": 4.00,
+        "descricao": "Agua mineral 500ml",
+        "imagem": "agua.jpg",
+        "emoji": "💧"
+    }
+}
 
 
 # ============================================================
-# UTILITARIOS
+# VARIAVEIS
+# ============================================================
+
+carrinho = []
+imagens_checkout = {}
+
+
+# ============================================================
+# FORMATAR DINHEIRO
 # ============================================================
 
 def formatar_real(valor):
     return f"R$ {valor:.2f}".replace(".", ",")
 
 
+# ============================================================
+# CRIAR IMAGEM DE FALLBACK
+# ============================================================
+
 def criar_imagem_fallback(nome, emoji):
-    caminho = os.path.join(PASTA_IMAGENS, nome)
+
+    caminho = os.path.join(
+        PASTA_IMAGENS,
+        nome
+    )
 
     if os.path.exists(caminho):
         return
 
-    imagem = Image.new("RGB", (400, 220), "#292929")
+    imagem = Image.new(
+        "RGB",
+        (400, 220),
+        "#292929"
+    )
+
     desenho = ImageDraw.Draw(imagem)
 
     desenho.rounded_rectangle(
@@ -192,7 +228,10 @@ def criar_imagem_fallback(nome, emoji):
     )
 
     try:
-        fonte = ImageFont.truetype("seguiemj.ttf", 90)
+        fonte = ImageFont.truetype(
+            "seguiemj.ttf",
+            90
+        )
     except Exception:
         fonte = ImageFont.load_default()
 
@@ -203,160 +242,280 @@ def criar_imagem_fallback(nome, emoji):
         font=fonte
     )
 
-    imagem.save(caminho, "JPEG", quality=90)
+    imagem.save(
+        caminho,
+        "JPEG",
+        quality=90
+    )
 
+
+# ============================================================
+# DOWNLOAD DAS IMAGENS
+# ============================================================
 
 def baixar_fotos():
-    # Fotos sao baixadas somente se ainda nao existirem.
+
     urls = {
+
         "xburger.jpg":
             "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80",
+
         "xsalada.jpg":
             "https://images.unsplash.com/photo-1550547660-d9450f859349?w=600&q=80",
+
         "xbacon.jpg":
             "https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=600&q=80",
+
         "xtudo.jpg":
             "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?w=600&q=80",
+
         "batata.jpg":
             "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=600&q=80",
+
         "refrigerante.jpg":
             "https://images.unsplash.com/photo-1629203849820-fdd70d49c38e?w=600&q=80",
+
         "suco.jpg":
             "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=600&q=80",
+
         "agua.jpg":
             "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=600&q=80",
 
         "xfrango.jpg":
             "https://images.unsplash.com/photo-1606755962773-d324e0a13086?w=600&q=80",
+
         "xcheddar.jpg":
             "https://images.unsplash.com/photo-1561758033-d89a9ad46330?w=600&q=80",
+
         "xduplo.jpg":
             "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=600&q=80",
+
         "xbarbecue.jpg":
             "https://images.unsplash.com/photo-1550317138-10000687a72b?w=600&q=80",
+
         "coca.jpg":
             "https://images.unsplash.com/photo-1629203849820-fdd70d49c38e?w=600&q=80",
+
         "guarana.jpg":
             "https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=600&q=80",
+
         "fanta.jpg":
             "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=600&q=80",
+
         "sprite.jpg":
             "https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=600&q=80",
+
         "pepsi.jpg":
             "https://images.unsplash.com/photo-1629203849820-fdd70d49c38e?w=600&q=80",
+
         "suco_laranja.jpg":
             "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=600&q=80",
+
         "suco_maracuja.jpg":
             "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=600&q=80",
+
         "suco_morango.jpg":
             "https://images.unsplash.com/photo-1546173159-315724a31696?w=600&q=80",
+
         "suco_limao.jpg":
             "https://images.unsplash.com/photo-1523677011781-c91d1bbe2f3f?w=600&q=80"
     }
 
     for produto, dados in CARDAPIO.items():
-        caminho = os.path.join(PASTA_IMAGENS, dados["imagem"])
+
+        caminho = os.path.join(
+            PASTA_IMAGENS,
+            dados["imagem"]
+        )
 
         if os.path.exists(caminho):
             continue
 
         try:
+
             requisicao = urllib.request.Request(
                 urls[dados["imagem"]],
-                headers={"User-Agent": "Mozilla/5.0"}
+                headers={
+                    "User-Agent": "Mozilla/5.0"
+                }
             )
 
-            with urllib.request.urlopen(requisicao, timeout=3) as resposta:
+            with urllib.request.urlopen(
+                requisicao,
+                timeout=5
+            ) as resposta:
+
                 dados_imagem = resposta.read()
 
-            imagem = Image.open(io.BytesIO(dados_imagem))
-            imagem.convert("RGB").save(caminho, "JPEG", quality=90)
+            imagem = Image.open(
+                io.BytesIO(dados_imagem)
+            )
+
+            imagem.convert("RGB").save(
+                caminho,
+                "JPEG",
+                quality=90
+            )
 
         except Exception:
+
             criar_imagem_fallback(
                 dados["imagem"],
                 dados["emoji"]
             )
 
 
+# ============================================================
+# CARREGAR IMAGEM
+# ============================================================
+
 def carregar_imagem(caminho, tamanho=(180, 90)):
+
     try:
-        imagem = Image.open(caminho)
-        imagem = imagem.resize(
+
+        imagem = Image.open(caminho).convert("RGB")
+
+        imagem.thumbnail(
             tamanho,
             Image.Resampling.LANCZOS
         )
-        return ImageTk.PhotoImage(imagem)
+
+        fundo = Image.new(
+            "RGB",
+            tamanho,
+            "#222222"
+        )
+
+        x = (tamanho[0] - imagem.width) // 2
+        y = (tamanho[1] - imagem.height) // 2
+
+        fundo.paste(
+            imagem,
+            (x, y)
+        )
+
+        return ImageTk.PhotoImage(fundo)
+
     except Exception:
-        imagem = Image.new("RGB", tamanho, "#333333")
+
+        imagem = Image.new(
+            "RGB",
+            tamanho,
+            "#333333"
+        )
+
         desenho = ImageDraw.Draw(imagem)
+
         desenho.text(
-            (tamanho[0] // 2, tamanho[1] // 2),
+            (
+                tamanho[0] // 2,
+                tamanho[1] // 2
+            ),
             "🍔",
             anchor="mm"
         )
+
         return ImageTk.PhotoImage(imagem)
 
 
+# ============================================================
+# CALCULAR VALORES
+# ============================================================
+
 def calcular_valores():
+
     subtotal = sum(
         item["preco"] * item["quantidade"]
         for item in carrinho
     )
 
-    desconto = subtotal * 0.10 if subtotal >= 50 else 0
+    if subtotal >= 50:
+        desconto = subtotal * 0.10
+    else:
+        desconto = 0
+
     total = subtotal - desconto
 
     return subtotal, desconto, total
 
 
 # ============================================================
-# CARRINHO
+# ADICIONAR PRODUTO
 # ============================================================
 
 def adicionar_produto(produto):
+
     for item in carrinho:
+
         if item["produto"] == produto:
+
             item["quantidade"] += 1
+
             atualizar_carrinho()
+
             return
 
-    carrinho.append({
-        "produto": produto,
-        "preco": CARDAPIO[produto]["preco"],
-        "quantidade": 1
-    })
+    carrinho.append(
+        {
+            "produto": produto,
+            "preco": CARDAPIO[produto]["preco"],
+            "quantidade": 1
+        }
+    )
 
     atualizar_carrinho()
 
 
+# ============================================================
+# REMOVER ITEM
+# ============================================================
+
 def remover_item():
+
     selecionado = tabela.selection()
 
     if not selecionado:
+
         messagebox.showwarning(
             "Atenção",
             "Selecione um item para remover."
         )
+
         return
 
-    indice = tabela.index(selecionado[0])
+    indice = tabela.index(
+        selecionado[0]
+    )
 
     if 0 <= indice < len(carrinho):
+
         if carrinho[indice]["quantidade"] > 1:
+
             carrinho[indice]["quantidade"] -= 1
+
         else:
+
             carrinho.pop(indice)
 
     atualizar_carrinho()
 
 
+# ============================================================
+# ATUALIZAR CARRINHO
+# ============================================================
+
 def atualizar_carrinho():
+
     for item in tabela.get_children():
+
         tabela.delete(item)
 
     for item in carrinho:
-        total_item = item["preco"] * item["quantidade"]
+
+        total_item = (
+            item["preco"] *
+            item["quantidade"]
+        )
 
         tabela.insert(
             "",
@@ -384,24 +543,46 @@ def atualizar_carrinho():
 
 
 # ============================================================
-# FINALIZACAO / CHECKOUT
+# CHECKOUT
 # ============================================================
 
 def abrir_checkout():
+
     if not carrinho:
+
         messagebox.showwarning(
             "Carrinho vazio",
             "Adicione produtos antes de finalizar a compra."
         )
+
         return
 
     checkout = tk.Toplevel(janela)
-    checkout.title("Finalizar compra")
-    checkout.geometry("430x540")
-    checkout.resizable(False, False)
-    checkout.configure(bg=COR_CARD)
+
+    checkout.title(
+        "Finalizar compra"
+    )
+
+    checkout.geometry(
+        "500x680"
+    )
+
+    checkout.resizable(
+        False,
+        False
+    )
+
+    checkout.configure(
+        bg=COR_CARD
+    )
+
     checkout.transient(janela)
     checkout.grab_set()
+
+
+    # ========================================================
+    # TITULO
+    # ========================================================
 
     tk.Label(
         checkout,
@@ -409,27 +590,215 @@ def abrir_checkout():
         font=("Arial", 19, "bold"),
         bg=COR_CARD,
         fg=COR_BRANCO
-    ).pack(pady=(18, 3))
+    ).pack(
+        pady=(12, 2)
+    )
 
     tk.Label(
         checkout,
-        text="Preencha os dados para concluir o pedido",
+        text="Confira seus produtos",
         font=("Arial", 9),
         bg=COR_CARD,
         fg=COR_CINZA
-    ).pack(pady=(0, 12))
+    ).pack(
+        pady=(0, 7)
+    )
 
-    formulario = tk.Frame(checkout, bg=COR_CARD)
-    formulario.pack(fill="x", padx=25)
+
+    # ========================================================
+    # PRODUTOS COM IMAGENS
+    # ========================================================
+
+    frame_produtos = tk.Frame(
+        checkout,
+        bg="#111111",
+        height=170
+    )
+
+    frame_produtos.pack(
+        fill="x",
+        padx=20,
+        pady=(0, 8)
+    )
+
+    frame_produtos.pack_propagate(False)
+
+
+    canvas_checkout = tk.Canvas(
+        frame_produtos,
+        bg="#111111",
+        highlightthickness=0
+    )
+
+    scrollbar_checkout = ttk.Scrollbar(
+        frame_produtos,
+        orient="vertical",
+        command=canvas_checkout.yview
+    )
+
+    area_checkout = tk.Frame(
+        canvas_checkout,
+        bg="#111111"
+    )
+
+    area_checkout.bind(
+        "<Configure>",
+        lambda event:
+        canvas_checkout.configure(
+            scrollregion=canvas_checkout.bbox("all")
+        )
+    )
+
+    canvas_checkout.create_window(
+        (0, 0),
+        window=area_checkout,
+        anchor="nw"
+    )
+
+    canvas_checkout.configure(
+        yscrollcommand=scrollbar_checkout.set
+    )
+
+    canvas_checkout.pack(
+        side="left",
+        fill="both",
+        expand=True
+    )
+
+    scrollbar_checkout.pack(
+        side="right",
+        fill="y"
+    )
+
+
+    # ========================================================
+    # IMAGENS DOS PRODUTOS
+    # ========================================================
+
+    imagens_checkout.clear()
+
+    for item in carrinho:
+
+        produto = item["produto"]
+
+        dados = CARDAPIO[produto]
+
+        caminho = os.path.join(
+            PASTA_IMAGENS,
+            dados["imagem"]
+        )
+
+        imagem = carregar_imagem(
+            caminho,
+            (100, 65)
+        )
+
+        imagens_checkout[produto] = imagem
+
+
+        card_produto = tk.Frame(
+            area_checkout,
+            bg=COR_CARD_2
+        )
+
+        card_produto.pack(
+            fill="x",
+            padx=7,
+            pady=4
+        )
+
+
+        tk.Label(
+            card_produto,
+            image=imagem,
+            bg=COR_CARD_2
+        ).pack(
+            side="left",
+            padx=7,
+            pady=5
+        )
+
+
+        informacoes = tk.Frame(
+            card_produto,
+            bg=COR_CARD_2
+        )
+
+        informacoes.pack(
+            side="left",
+            fill="both",
+            expand=True,
+            padx=5
+        )
+
+
+        tk.Label(
+            informacoes,
+            text=produto,
+            font=("Arial", 10, "bold"),
+            bg=COR_CARD_2,
+            fg=COR_BRANCO
+        ).pack(
+            anchor="w",
+            pady=(6, 0)
+        )
+
+
+        tk.Label(
+            informacoes,
+            text=f"Quantidade: {item['quantidade']}",
+            font=("Arial", 8),
+            bg=COR_CARD_2,
+            fg=COR_CINZA
+        ).pack(
+            anchor="w"
+        )
+
+
+        valor_item = (
+            item["preco"] *
+            item["quantidade"]
+        )
+
+
+        tk.Label(
+            informacoes,
+            text=formatar_real(valor_item),
+            font=("Arial", 10, "bold"),
+            bg=COR_CARD_2,
+            fg=COR_VERMELHO
+        ).pack(
+            anchor="w"
+        )
+
+
+    # ========================================================
+    # FORMULARIO
+    # ========================================================
+
+    formulario = tk.Frame(
+        checkout,
+        bg=COR_CARD
+    )
+
+    formulario.pack(
+        fill="x",
+        padx=25
+    )
+
 
     # Nome
+
     tk.Label(
         formulario,
         text="Nome do cliente *",
         font=("Arial", 9, "bold"),
         bg=COR_CARD,
         fg=COR_CINZA
-    ).pack(anchor="w")
+    ).pack(
+        anchor="w"
+    )
+
 
     entrada_nome = tk.Entry(
         formulario,
@@ -439,16 +808,26 @@ def abrir_checkout():
         insertbackground=COR_BRANCO,
         relief="flat"
     )
-    entrada_nome.pack(fill="x", pady=(3, 9), ipady=6)
+
+    entrada_nome.pack(
+        fill="x",
+        pady=(3, 6),
+        ipady=5
+    )
+
 
     # Endereco
+
     tk.Label(
         formulario,
         text="Endereço / Rua *",
         font=("Arial", 9, "bold"),
         bg=COR_CARD,
         fg=COR_CINZA
-    ).pack(anchor="w")
+    ).pack(
+        anchor="w"
+    )
+
 
     entrada_endereco = tk.Entry(
         formulario,
@@ -458,35 +837,62 @@ def abrir_checkout():
         insertbackground=COR_BRANCO,
         relief="flat"
     )
-    entrada_endereco.pack(fill="x", pady=(3, 9), ipady=6)
+
+    entrada_endereco.pack(
+        fill="x",
+        pady=(3, 6),
+        ipady=5
+    )
+
 
     # Tipo de residencia
+
     tk.Label(
         formulario,
         text="Tipo de residência",
         font=("Arial", 9, "bold"),
         bg=COR_CARD,
         fg=COR_CINZA
-    ).pack(anchor="w")
+    ).pack(
+        anchor="w"
+    )
 
-    tipo_var = tk.StringVar(value="Casa")
+
+    tipo_var = tk.StringVar(
+        value="Casa"
+    )
+
 
     combo_tipo = ttk.Combobox(
         formulario,
         textvariable=tipo_var,
-        values=["Casa", "Apartamento", "Outro"],
+        values=[
+            "Casa",
+            "Apartamento",
+            "Outro"
+        ],
         state="readonly"
     )
-    combo_tipo.pack(fill="x", pady=(3, 9), ipady=4)
+
+    combo_tipo.pack(
+        fill="x",
+        pady=(3, 6),
+        ipady=3
+    )
+
 
     # Numero da casa
+
     tk.Label(
         formulario,
         text="Número da casa *",
         font=("Arial", 9, "bold"),
         bg=COR_CARD,
         fg=COR_CINZA
-    ).pack(anchor="w")
+    ).pack(
+        anchor="w"
+    )
+
 
     entrada_numero = tk.Entry(
         formulario,
@@ -496,18 +902,31 @@ def abrir_checkout():
         insertbackground=COR_BRANCO,
         relief="flat"
     )
-    entrada_numero.pack(fill="x", pady=(3, 9), ipady=6)
 
-    # Forma de pagamento
+    entrada_numero.pack(
+        fill="x",
+        pady=(3, 6),
+        ipady=5
+    )
+
+
+    # Pagamento
+
     tk.Label(
         formulario,
         text="Forma de pagamento *",
         font=("Arial", 9, "bold"),
         bg=COR_CARD,
         fg=COR_CINZA
-    ).pack(anchor="w")
+    ).pack(
+        anchor="w"
+    )
 
-    pagamento_var = tk.StringVar(value="PIX")
+
+    pagamento_var = tk.StringVar(
+        value="PIX"
+    )
+
 
     combo_pagamento = ttk.Combobox(
         formulario,
@@ -520,69 +939,137 @@ def abrir_checkout():
         ],
         state="readonly"
     )
-    combo_pagamento.pack(fill="x", pady=(3, 10), ipady=4)
+
+    combo_pagamento.pack(
+        fill="x",
+        pady=(3, 6),
+        ipady=3
+    )
+
+
+    # ========================================================
+    # RESUMO
+    # ========================================================
 
     subtotal, desconto, total = calcular_valores()
+
 
     resumo = tk.Frame(
         checkout,
         bg="#111111"
     )
+
     resumo.pack(
         fill="x",
         padx=25,
-        pady=(2, 10)
+        pady=(2, 7)
     )
+
 
     tk.Label(
         resumo,
-        text=f"Total da compra: {formatar_real(total)}",
+        text=f"Subtotal: {formatar_real(subtotal)}",
+        font=("Arial", 8),
+        bg="#111111",
+        fg=COR_CINZA
+    ).pack(
+        anchor="w",
+        padx=10,
+        pady=(4, 0)
+    )
+
+
+    tk.Label(
+        resumo,
+        text=f"Desconto: {formatar_real(desconto)}",
+        font=("Arial", 8),
+        bg="#111111",
+        fg=COR_CINZA
+    ).pack(
+        anchor="w",
+        padx=10
+    )
+
+
+    tk.Label(
+        resumo,
+        text=f"TOTAL: {formatar_real(total)}",
         font=("Arial", 12, "bold"),
         bg="#111111",
         fg=COR_VERDE
-    ).pack(pady=9)
+    ).pack(
+        anchor="w",
+        padx=10,
+        pady=(0, 4)
+    )
+
+
+    # ========================================================
+    # CONFIRMAR COMPRA
+    # ========================================================
 
     def confirmar_compra():
+
         nome = entrada_nome.get().strip()
+
         endereco = entrada_endereco.get().strip()
+
         numero_casa = entrada_numero.get().strip()
+
         tipo_residencia = tipo_var.get()
+
         pagamento = pagamento_var.get()
 
+
         if not nome:
+
             messagebox.showwarning(
                 "Dados incompletos",
                 "Digite o nome do cliente.",
                 parent=checkout
             )
+
             entrada_nome.focus()
+
             return
 
+
         if not endereco:
+
             messagebox.showwarning(
                 "Dados incompletos",
                 "Digite o endereço / rua.",
                 parent=checkout
             )
+
             entrada_endereco.focus()
+
             return
 
+
         if not numero_casa:
+
             messagebox.showwarning(
                 "Dados incompletos",
                 "Digite o número da casa.",
                 parent=checkout
             )
+
             entrada_numero.focus()
+
             return
 
+
         if not pagamento:
+
             messagebox.showwarning(
                 "Dados incompletos",
                 "Escolha uma forma de pagamento.",
                 parent=checkout
             )
+
             return
+
 
         finalizar_pedido(
             nome,
@@ -592,6 +1079,7 @@ def abrir_checkout():
             pagamento,
             checkout
         )
+
 
     tk.Button(
         checkout,
@@ -603,15 +1091,20 @@ def abrir_checkout():
         activeforeground=COR_BRANCO,
         relief="flat",
         cursor="hand2",
-        font=("Arial", 11, "bold")
+        font=("Arial", 10, "bold")
     ).pack(
         fill="x",
         padx=25,
-        ipady=9
+        ipady=8
     )
+
 
     entrada_nome.focus()
 
+
+# ============================================================
+# FINALIZAR PEDIDO
+# ============================================================
 
 def finalizar_pedido(
     nome,
@@ -621,26 +1114,52 @@ def finalizar_pedido(
     pagamento,
     checkout
 ):
+
     subtotal, desconto, total = calcular_valores()
 
     agora = datetime.now()
-    numero = agora.strftime("%Y%m%d%H%M%S")
+
+    numero = agora.strftime(
+        "%Y%m%d%H%M%S"
+    )
+
 
     pedido = {
+
         "numero": numero,
+
         "cliente": nome,
+
         "endereco": endereco,
+
         "tipo_residencia": tipo_residencia,
+
         "numero_casa": numero_casa,
-        "data": agora.strftime("%d/%m/%Y"),
-        "hora": agora.strftime("%H:%M:%S"),
+
+        "data": agora.strftime(
+            "%d/%m/%Y"
+        ),
+
+        "hora": agora.strftime(
+            "%H:%M:%S"
+        ),
+
         "status": "Recebido",
+
         "pagamento": pagamento,
-        "itens": [item.copy() for item in carrinho],
+
+        "itens": [
+            item.copy()
+            for item in carrinho
+        ],
+
         "subtotal": subtotal,
+
         "desconto": desconto,
+
         "total": total
     }
+
 
     salvar_pedido(pedido)
 
@@ -651,27 +1170,50 @@ def finalizar_pedido(
     limpar_pedido()
 
 
+# ============================================================
+# SALVAR PEDIDO
+# ============================================================
+
 def salvar_pedido(pedido):
+
     pedidos = []
 
-    if os.path.exists(ARQUIVO_PEDIDOS):
+
+    if os.path.exists(
+        ARQUIVO_PEDIDOS
+    ):
+
         try:
+
             with open(
                 ARQUIVO_PEDIDOS,
                 "r",
                 encoding="utf-8"
             ) as arquivo:
-                pedidos = json.load(arquivo)
-        except (json.JSONDecodeError, FileNotFoundError):
+
+                pedidos = json.load(
+                    arquivo
+                )
+
+        except (
+            json.JSONDecodeError,
+            FileNotFoundError
+        ):
+
             pedidos = []
 
-    pedidos.append(pedido)
+
+    pedidos.append(
+        pedido
+    )
+
 
     with open(
         ARQUIVO_PEDIDOS,
         "w",
         encoding="utf-8"
     ) as arquivo:
+
         json.dump(
             pedidos,
             arquivo,
@@ -680,12 +1222,33 @@ def salvar_pedido(pedido):
         )
 
 
+# ============================================================
+# RECIBO
+# ============================================================
+
 def mostrar_recibo(pedido):
-    janela_recibo = tk.Toplevel(janela)
-    janela_recibo.title("Pedido finalizado")
-    janela_recibo.geometry("450x570")
-    janela_recibo.resizable(False, False)
-    janela_recibo.configure(bg=COR_CARD)
+
+    janela_recibo = tk.Toplevel(
+        janela
+    )
+
+    janela_recibo.title(
+        "Pedido finalizado"
+    )
+
+    janela_recibo.geometry(
+        "450x570"
+    )
+
+    janela_recibo.resizable(
+        False,
+        False
+    )
+
+    janela_recibo.configure(
+        bg=COR_CARD
+    )
+
 
     tk.Label(
         janela_recibo,
@@ -693,7 +1256,10 @@ def mostrar_recibo(pedido):
         font=("Arial", 18, "bold"),
         bg=COR_CARD,
         fg=COR_VERMELHO
-    ).pack(pady=(15, 5))
+    ).pack(
+        pady=(15, 5)
+    )
+
 
     texto = tk.Text(
         janela_recibo,
@@ -704,6 +1270,7 @@ def mostrar_recibo(pedido):
         padx=12,
         pady=12
     )
+
     texto.pack(
         fill="both",
         expand=True,
@@ -711,42 +1278,87 @@ def mostrar_recibo(pedido):
         pady=12
     )
 
+
     recibo = (
+
         "====================================\n"
         "       HAMBURGUERIA AUTOMATIZADA\n"
         "====================================\n\n"
+
         f"PEDIDO Nº: {pedido['numero']}\n"
+
         f"Cliente: {pedido['cliente']}\n"
-        f"Data: {pedido['data']}  {pedido['hora']}\n\n"
+
+        f"Data: {pedido['data']}  "
+        f"{pedido['hora']}\n\n"
+
         "ENDEREÇO DE ENTREGA\n"
+
         "------------------------------------\n"
+
         f"Endereço: {pedido['endereco']}\n"
+
         f"Tipo: {pedido['tipo_residencia']}\n"
+
         f"Número: {pedido['numero_casa']}\n\n"
+
         "ITENS DO PEDIDO\n"
+
         "------------------------------------\n"
     )
 
+
     for item in pedido["itens"]:
-        valor_item = item["preco"] * item["quantidade"]
-        recibo += (
-            f"{item['quantidade']}x {item['produto']}\n"
-            f"    {formatar_real(valor_item)}\n"
+
+        valor_item = (
+            item["preco"] *
+            item["quantidade"]
         )
 
+        recibo += (
+
+            f"{item['quantidade']}x "
+            f"{item['produto']}\n"
+
+            f"    "
+            f"{formatar_real(valor_item)}\n"
+        )
+
+
     recibo += (
+
         "\n------------------------------------\n"
-        f"Subtotal: {formatar_real(pedido['subtotal'])}\n"
-        f"Desconto: {formatar_real(pedido['desconto'])}\n"
-        f"TOTAL: {formatar_real(pedido['total'])}\n\n"
-        f"Pagamento: {pedido['pagamento']}\n"
-        f"Status: {pedido['status']}\n\n"
-        "Obrigado pela preferência! ❤️\n"
+
+        f"Subtotal: "
+        f"{formatar_real(pedido['subtotal'])}\n"
+
+        f"Desconto: "
+        f"{formatar_real(pedido['desconto'])}\n"
+
+        f"TOTAL: "
+        f"{formatar_real(pedido['total'])}\n\n"
+
+        f"Pagamento: "
+        f"{pedido['pagamento']}\n"
+
+        f"Status: "
+        f"{pedido['status']}\n\n"
+
+        "Obrigado pela preferência!\n"
+
         "====================================\n"
     )
 
-    texto.insert("1.0", recibo)
-    texto.config(state="disabled")
+
+    texto.insert(
+        "1.0",
+        recibo
+    )
+
+    texto.config(
+        state="disabled"
+    )
+
 
     tk.Button(
         janela_recibo,
@@ -766,31 +1378,59 @@ def mostrar_recibo(pedido):
     )
 
 
+# ============================================================
+# NOVO PEDIDO
+# ============================================================
+
 def limpar_pedido():
+
     carrinho.clear()
+
     atualizar_carrinho()
 
 
 # ============================================================
-# INTERFACE PRINCIPAL
+# JANELA PRINCIPAL
 # ============================================================
 
-baixar_fotos()
-
 janela = tk.Tk()
-janela.title("Chapa Quente Hmaburguers")
-janela.geometry(f"{LARGURA}x{ALTURA}")
-janela.resizable(False, False)
-janela.configure(bg=COR_FUNDO)
 
-# Cabecalho
+janela.title(
+    "Chapa Quente Hamburgueria"
+)
+
+janela.geometry(
+    f"{LARGURA}x{ALTURA}"
+)
+
+janela.resizable(
+    False,
+    False
+)
+
+janela.configure(
+    bg=COR_FUNDO
+)
+
+
+# ============================================================
+# CABECALHO
+# ============================================================
+
 topo = tk.Frame(
     janela,
     bg="#0b0b0b",
     height=65
 )
-topo.pack(fill="x")
-topo.pack_propagate(False)
+
+topo.pack(
+    fill="x"
+)
+
+topo.pack_propagate(
+    False
+)
+
 
 tk.Label(
     topo,
@@ -798,15 +1438,22 @@ tk.Label(
     font=("Arial", 20, "bold"),
     bg="#0b0b0b",
     fg=COR_BRANCO
-).pack(side="left", padx=20)
+).pack(
+    side="left",
+    padx=20
+)
+
 
 tk.Label(
     topo,
-    text="Hamburguers",
+    text="Hamburgueria",
     font=("Arial", 10, "bold"),
     bg="#0b0b0b",
     fg=COR_VERMELHO
-).pack(side="left")
+).pack(
+    side="left"
+)
+
 
 relogio = tk.Label(
     topo,
@@ -815,23 +1462,40 @@ relogio = tk.Label(
     bg="#0b0b0b",
     fg=COR_CINZA
 )
-relogio.pack(side="right", padx=20)
 
+relogio.pack(
+    side="right",
+    padx=20
+)
+
+
+# ============================================================
+# RELOGIO
+# ============================================================
 
 def atualizar_relogio():
+
     relogio.config(
         text=datetime.now().strftime(
             "%d/%m/%Y  •  %H:%M:%S"
         )
     )
-    janela.after(1000, atualizar_relogio)
+
+    janela.after(
+        1000,
+        atualizar_relogio
+    )
 
 
-# Corpo
+# ============================================================
+# CORPO PRINCIPAL
+# ============================================================
+
 principal = tk.Frame(
     janela,
     bg=COR_FUNDO
 )
+
 principal.pack(
     fill="both",
     expand=True,
@@ -839,8 +1503,9 @@ principal.pack(
     pady=10
 )
 
+
 # ============================================================
-# CARDAPIO
+# LADO ESQUERDO - CARDAPIO
 # ============================================================
 
 esquerda = tk.Frame(
@@ -848,11 +1513,13 @@ esquerda = tk.Frame(
     bg=COR_FUNDO,
     width=570
 )
+
 esquerda.pack(
     side="left",
     fill="both",
     expand=True
 )
+
 
 tk.Label(
     esquerda,
@@ -860,7 +1527,11 @@ tk.Label(
     font=("Arial", 17, "bold"),
     bg=COR_FUNDO,
     fg=COR_BRANCO
-).pack(anchor="w", pady=(0, 5))
+).pack(
+    anchor="w",
+    pady=(0, 5)
+)
+
 
 canvas = tk.Canvas(
     esquerda,
@@ -868,23 +1539,28 @@ canvas = tk.Canvas(
     highlightthickness=0
 )
 
+
 scrollbar_produtos = ttk.Scrollbar(
     esquerda,
     orient="vertical",
     command=canvas.yview
 )
 
+
 area_produtos = tk.Frame(
     canvas,
     bg=COR_FUNDO
 )
 
+
 area_produtos.bind(
     "<Configure>",
-    lambda event: canvas.configure(
+    lambda event:
+    canvas.configure(
         scrollregion=canvas.bbox("all")
     )
 )
+
 
 canvas.create_window(
     (0, 0),
@@ -892,9 +1568,11 @@ canvas.create_window(
     anchor="nw"
 )
 
+
 canvas.configure(
     yscrollcommand=scrollbar_produtos.set
 )
+
 
 canvas.pack(
     side="left",
@@ -902,45 +1580,44 @@ canvas.pack(
     expand=True
 )
 
+
 scrollbar_produtos.pack(
     side="right",
     fill="y"
 )
 
-for indice, (produto, dados) in enumerate(CARDAPIO.items()):
+
+# ============================================================
+# CARDS DO CARDAPIO - SEM IMAGENS
+# ============================================================
+
+for indice, (produto, dados) in enumerate(
+    CARDAPIO.items()
+):
+
     linha = indice // 2
+
     coluna = indice % 2
+
 
     card = tk.Frame(
         area_produtos,
         bg=COR_CARD,
         width=260,
-        height=175
+        height=105
     )
+
     card.grid(
         row=linha,
         column=coluna,
         padx=5,
         pady=5
     )
-    card.grid_propagate(False)
 
-    caminho = os.path.join(
-        PASTA_IMAGENS,
-        dados["imagem"]
+    card.grid_propagate(
+        False
     )
 
-    imagem = carregar_imagem(
-        caminho,
-        (235, 78)
-    )
-    imagens[produto] = imagem
-
-    tk.Label(
-        card,
-        image=imagem,
-        bg=COR_CARD
-    ).pack(pady=(6, 3))
 
     tk.Label(
         card,
@@ -948,41 +1625,69 @@ for indice, (produto, dados) in enumerate(CARDAPIO.items()):
         font=("Arial", 11, "bold"),
         bg=COR_CARD,
         fg=COR_BRANCO
-    ).pack()
+    ).pack(
+        anchor="w",
+        padx=12,
+        pady=(10, 2)
+    )
+
+
+    tk.Label(
+        card,
+        text=dados["descricao"],
+        font=("Arial", 8),
+        bg=COR_CARD,
+        fg=COR_CINZA
+    ).pack(
+        anchor="w",
+        padx=12
+    )
+
 
     rodape = tk.Frame(
         card,
         bg=COR_CARD
     )
+
     rodape.pack(
         fill="x",
-        padx=10,
-        pady=4
+        padx=12,
+        pady=7
     )
+
 
     tk.Label(
         rodape,
-        text=formatar_real(dados["preco"]),
+        text=formatar_real(
+            dados["preco"]
+        ),
         font=("Arial", 11, "bold"),
         bg=COR_CARD,
         fg=COR_VERMELHO
-    ).pack(side="left")
+    ).pack(
+        side="left"
+    )
+
 
     tk.Button(
         rodape,
         text="+ ADICIONAR",
-        command=lambda p=produto: adicionar_produto(p),
+        command=lambda p=produto:
+        adicionar_produto(p),
         bg=COR_VERMELHO,
         fg=COR_BRANCO,
         activebackground=COR_VERMELHO_ESCURO,
+        activeforeground=COR_BRANCO,
         relief="flat",
         cursor="hand2",
         font=("Arial", 8, "bold")
-    ).pack(side="right")
+    ).pack(
+        side="right"
+    )
 
 
 # ============================================================
-# PEDIDO
+# LADO DIREITO - PEDIDO
 # ============================================================
 
 direita = tk.Frame(
@@ -990,12 +1695,17 @@ direita = tk.Frame(
     bg=COR_CARD,
     width=295
 )
+
 direita.pack(
     side="right",
     fill="y",
     padx=(10, 0)
 )
-direita.pack_propagate(False)
+
+direita.pack_propagate(
+    False
+)
+
 
 tk.Label(
     direita,
@@ -1009,11 +1719,17 @@ tk.Label(
     pady=(15, 8)
 )
 
+
+# ============================================================
+# TABELA DO CARRINHO
+# ============================================================
+
 colunas = (
     "Produto",
     "Qtd",
     "Total"
 )
+
 
 tabela = ttk.Treeview(
     direita,
@@ -1022,18 +1738,50 @@ tabela = ttk.Treeview(
     height=8
 )
 
-tabela.heading("Produto", text="Produto")
-tabela.heading("Qtd", text="Qtd")
-tabela.heading("Total", text="Total")
 
-tabela.column("Produto", width=125)
-tabela.column("Qtd", width=35, anchor="center")
-tabela.column("Total", width=70, anchor="e")
+tabela.heading(
+    "Produto",
+    text="Produto"
+)
+
+tabela.heading(
+    "Qtd",
+    text="Qtd"
+)
+
+tabela.heading(
+    "Total",
+    text="Total"
+)
+
+
+tabela.column(
+    "Produto",
+    width=125
+)
+
+tabela.column(
+    "Qtd",
+    width=35,
+    anchor="center"
+)
+
+tabela.column(
+    "Total",
+    width=70,
+    anchor="e"
+)
+
 
 tabela.pack(
     fill="x",
     padx=15
 )
+
+
+# ============================================================
+# REMOVER
+# ============================================================
 
 tk.Button(
     direita,
@@ -1052,6 +1800,11 @@ tk.Button(
     ipady=5
 )
 
+
+# ============================================================
+# SEPARADOR
+# ============================================================
+
 tk.Frame(
     direita,
     bg="#333333",
@@ -1062,6 +1815,11 @@ tk.Frame(
     pady=3
 )
 
+
+# ============================================================
+# SUBTOTAL
+# ============================================================
+
 subtotal_label = tk.Label(
     direita,
     text="Subtotal: R$ 0,00",
@@ -1069,11 +1827,17 @@ subtotal_label = tk.Label(
     bg=COR_CARD,
     fg=COR_CINZA
 )
+
 subtotal_label.pack(
     anchor="w",
     padx=15,
     pady=2
 )
+
+
+# ============================================================
+# DESCONTO
+# ============================================================
 
 desconto_label = tk.Label(
     direita,
@@ -1082,11 +1846,17 @@ desconto_label = tk.Label(
     bg=COR_CARD,
     fg=COR_CINZA
 )
+
 desconto_label.pack(
     anchor="w",
     padx=15,
     pady=2
 )
+
+
+# ============================================================
+# TOTAL
+# ============================================================
 
 total_label = tk.Label(
     direita,
@@ -1095,16 +1865,22 @@ total_label = tk.Label(
     bg=COR_CARD,
     fg=COR_VERMELHO
 )
+
 total_label.pack(
     anchor="w",
     padx=15,
     pady=(4, 8)
 )
 
+
+# ============================================================
+# INFORMACAO
+# ============================================================
+
 tk.Label(
     direita,
-    text="Na próxima tela você informa:\n"
-         "nome, endereço, casa e pagamento.",
+    text="Na próxima tela você verá as imagens\n"
+         "dos produtos e informará os dados.",
     font=("Arial", 8),
     justify="left",
     bg=COR_CARD,
@@ -1114,6 +1890,11 @@ tk.Label(
     padx=15,
     pady=(0, 8)
 )
+
+
+# ============================================================
+# FINALIZAR COMPRA
+# ============================================================
 
 tk.Button(
     direita,
@@ -1132,6 +1913,11 @@ tk.Button(
     ipady=9
 )
 
+
+# ============================================================
+# NOVO PEDIDO
+# ============================================================
+
 tk.Button(
     direita,
     text="＋ NOVO PEDIDO",
@@ -1149,7 +1935,15 @@ tk.Button(
     ipady=6
 )
 
+
+# ============================================================
+# INICIAR
+# ============================================================
+
 atualizar_carrinho()
+
 atualizar_relogio()
+
+baixar_fotos()
 
 janela.mainloop()
